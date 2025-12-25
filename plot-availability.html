@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>Plot Availability - Shubhada Developers</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="logo.png" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .scrollable-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .container {
+            position: relative;
+            text-align: center;
+            margin: 20px;
+            display: inline-block;
+        }
+
+        .container img {
+            width: 900px;
+            height: 900px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .plot-button {
+            position: absolute;
+            width: 5%; /* Default width for larger screens */
+            height: auto;
+            font-size: 0.8em; /* Slightly smaller font size */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+            border-radius: 3px; /* Rounded corners for better aesthetics */
+        }
+
+        .footer {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+        }
+
+        /* Pop-up modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .plot-button {
+            position: absolute;
+            width: 5%; /* Default width for larger screens */
+            height: auto;
+            font-size: 0.8em; /* Slightly smaller font size */
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+            border-radius: 3px; /* Rounded corners for better aesthetics */
+        }
+
+        .available {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .landlord {
+            background-color: #FF5733; /* Orange */
+        }
+
+        .sold {
+            background-color: #FF0000; /* Red */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="scrollable-container">
+        <div class="container">
+            <h1>Plot Availability</h1>
+            <img src="plots map.jpg" alt="Plot Availability">
+            <div id="plots-container"></div>
+        </div>
+    </div>
+
+    <!-- Modal structure -->
+    <div id="plotModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Plot Details</h2>
+            <div id="plotDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        // Plot positions on the map
+        const plotPositions = [
+        { number: 1, top: '41%', left: '74%' },
+          { number: 2, top: '45%', left: '74%' },
+          { number: 3, top: '50%', left: '74%' },
+          { number: 4, top: '54%', left: '74%' },
+          { number: 5, top: '63%', left: '74%' },
+          { number: 6, top: '67%', left: '74%' },
+          { number: 7, top: '72%', left: '74%' },
+          { number: 8, top: '76%', left: '74%' },
+          { number: 9, top: '81%', left: '74%' },
+          { number: 10, top: '85%', left: '74%' },
+          { number: 11, top: '85%', left: '63%' },
+          { number: 12, top: '82%', left: '63%' },
+          { number: 13, top: '78%', left: '63%' },
+          { number: 14, top: '74.5%', left: '63%' },
+          { number: 15, top: '71%', left: '63%' },
+          { number: 16, top: '67%', left: '63%' },
+          { number: 17, top: '63%', left: '63%' },
+          { number: 18, top: '54%', left: '63%' },
+          { number: 19, top: '50%', left: '63%' },
+          { number: 20, top: '46.5%', left: '63%' },
+          { number: 21, top: '42.5%', left: '63%'},
+          { number: 22, top: '39%', left: '63%' },
+          { number: 23, top: '35.5%', left: '63%' },
+          { number: 24, top: '32%', left: '63%' },
+          { number: 25, top: '29%', left: '63%' },
+          { number: 26, top: '28%', left: '50%' },
+          { number: 27, top: '32%', left: '50%' },
+          { number: 28, top: '35.5%', left: '50%' },
+          { number: 29, top: '39%', left: '50%' },
+          { number: 30, top: '42.5%', left: '50%' },
+          { number: 31, top: '46.5%', left: '50%' },
+          { number: 32, top: '50%', left: '50%' },
+          { number: 33, top: '54%', left: '50%' },
+          { number: 34, top: '63%', left: '50%' },
+          { number: 35, top: '67%', left: '50%' },
+          { number: 36, top: '71%', left: '50%' },
+          { number: 37, top: '74.5%', left: '50%' },
+          { number: 38, top: '78%', left: '50%' },
+          { number: 39, top: '82%', left: '50%' },
+          { number: 40, top: '85%', left: '50%' },
+          { number: 41, top: '85%', left: '41.5%' },
+          { number: 42, top: '82%', left: '41.5%' },
+          { number: 43, top: '78%', left: '41.5%' },
+          { number: 44, top: '74.5%', left: '41.5%' },
+          { number: 45, top: '71%', left: '41.5%' },
+          { number: 46, top: '67%', left: '41.5%' },
+          { number: 47, top: '63%', left: '41.5%' },
+          { number: 48, top: '54%', left: '41.5%' },
+          { number: 49, top: '50%', left: '41.5%' },
+          { number: 50, top: '46.5%', left: '41.5%' },
+          { number: 51, top: '42.5%', left: '41.5%' },
+          { number: 52, top: '39%', left: '41.5%' },
+          { number: 53, top: '35.5%', left: '41.5%' },
+          { number: 54, top: '32%', left: '41.5%' },
+          { number: 55, top: '28%', left: '41.5%' },
+          { number: 56, top: '28%', left: '28.5%' },
+          { number: 57, top: '32%', left: '28.5%' },
+          { number: 58, top: '35.5%', left: '28.5%' },
+          { number: 59, top: '39%', left: '28.5%' },
+          { number: 60, top: '42.5%', left: '28.5%' },
+          { number: 61, top: '46.5%', left: '28.5%' },
+          { number: 62, top: '50%', left: '28.5%' },
+          { number: 63, top: '54%', left: '28.5%' },
+          { number: 64, top: '63%', left: '28.5%' },
+          { number: 65, top: '67%', left: '28.5%' },
+          { number: 66, top: '71%', left: '28.5%' },
+          { number: 67, top: '74.5%', left: '28.5%' },
+          { number: 68, top: '78%', left: '28.5%' },
+          { number: 69, top: '82%', left: '28.5%' },
+          { number: 70, top: '82%', left: '20%' },
+          { number: 71, top: '78%', left: '20%' },
+          { number: 72, top: '74.5%', left: '20%' },
+          { number: 73, top: '71%', left: '20%' },
+          { number: 74, top: '67%', left: '20%' },
+          { number: 75, top: '63%', left: '20%' },
+          { number: 76, top: '54%', left: '20%' },
+          { number: 77, top: '50%', left: '20%' },
+          { number: 78, top: '46.5%', left: '20%' },
+          { number: 79, top: '42.5%', left: '20%' },
+          { number: 80, top: '39%', left: '20%' },
+          { number: 81, top: '35.5%', left: '20%' },
+          { number: 82, top: '32%', left: '20%' },
+          { number: 83, top: '28%', left: '20%' },
+          { number: 84, top: '63%', left: '7%' },
+          { number: 85, top: '67%', left: '7%' },
+          { number: 86, top: '71%', left: '7%' },
+          { number: 87, top: '74.5%', left: '7%' },
+          { number: 88, top: '78%', left: '7%' },
+          { number: 89, top: '82%', left: '7%' },
+        ];
+
+        // Predefined plot data for 89 plots
+        const plotData = [
+        { plotno: 1, lengthfeet1: 87, lengthinches1: 8, lengthfeet2: 87, lengthinches2: 11, widthfeet1: 33, widthinches1: 6, widthfeet2: 33, widthinches2: 6, plotarea: 325.84, plotfacing: 'East', status: 'Landlord'},
+            { plotno: 2, lengthfeet1: 87, lengthinches1: 11, lengthfeet2: 90, lengthinches2: 6, widthfeet1: 40, widthinches1: 1, widthfeet2: 40, widthinches2: 0, plotarea: 395.15, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 3, lengthfeet1: 90, lengthinches1: 6, lengthfeet2: 94, lengthinches2: 2, widthfeet1: 40, widthinches1: 2, widthfeet2: 40, widthinches2: 0, plotarea: 410.59, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 4, lengthfeet1: 94, lengthinches1: 2, lengthfeet2: 97, lengthinches2: 10, widthfeet1: 40, widthinches1: 2, widthfeet2: 40, widthinches2: 0, plotarea: 426.99, plotfacing: 'East-South', status: 'Landlord' },
+            { plotno: 5, lengthfeet1: 101, lengthinches1: 6, lengthfeet2: 105, lengthinches2: 3, widthfeet1: 40, widthinches1: 2, widthfeet2: 40, widthinches2: 0, plotarea: 459.79, plotfacing: 'North-East', status: 'Available'},
+            { plotno: 6, lengthfeet1: 105, lengthinches1: 3, lengthfeet2: 108, lengthinches2: 11, widthfeet1: 40, widthinches1: 2, widthfeet2: 40, widthinches2: 0, plotarea: 476.18, plotfacing: 'East', status: 'Available' },
+            { plotno: 7, lengthfeet1: 108, lengthinches1: 11, lengthfeet2: 112, lengthinches2: 7, widthfeet1: 40, widthinches1: 2, widthfeet2: 40, widthinches2: 0, plotarea: 492.58, plotfacing: 'East', status: 'Available' },
+            { plotno: 8, lengthfeet1: 112, lengthinches1: 7, lengthfeet2: 116, lengthinches2: 0, widthfeet1: 40, widthinches1: 2, widthfeet2: 40, widthinches2: 0, plotarea: 508.89, plotfacing: 'East', status: 'Available' },
+            { plotno: 9, lengthfeet1: 116, lengthinches1: 0, lengthfeet2: 117, lengthinches2: 0, widthfeet1: 36, widthinches1: 0, widthfeet2: 36, widthinches2: 0, plotarea: 465.96, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 10, lengthfeet1: 117, lengthinches1: 0, lengthfeet2: 118, lengthinches2: 1, widthfeet1: 38, widthinches1: 4, widthfeet2: 37, widthinches2: 9, plotarea: 497.04, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 11, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 27, widthinches1: 8, widthfeet2: 28, widthinches2: 10, plotarea: 172.73, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 12, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 13, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 14, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 15, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 16, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 17, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 244.66, plotfacing: 'North-West', status: 'Landlord' },
+            { plotno: 18, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 244.66, plotfacing: 'North-West', status: 'Landlord' },
+            { plotno: 19, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 20, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 9, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 21, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 22, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 23, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 24, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 25, widthinches1: 0, widthfeet2: 25, widthinches2: 0, plotarea: 152.82, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 25, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 42, widthinches1: 9, widthfeet2: 23, widthinches2: 0, plotarea: 202.7, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 26, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 266.66, plotfacing: 'North-East', status: 'Landlord' },
+            { plotno: 27, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 28, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 29, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 30, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 31, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 32, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 33, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 266.66, plotfacing: 'South-East', status: 'Landlord' },
+            { plotno: 34, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 266.66, plotfacing: 'North-East', status: 'Landlord' },
+            { plotno: 35, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 36, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Sold' },
+            { plotno: 37, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Sold' },
+            { plotno: 38, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Available' },
+            { plotno: 39, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Available' },
+            { plotno: 40, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 1, widthfeet1: 27, widthinches1: 0, widthfeet2: 23, widthinches2: 9, plotarea: 172.03, plotfacing: 'East', status: 'Available' },
+            { plotno: 41, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 2, widthfeet1: 27, widthinches1: 5, widthfeet2: 31, widthinches2: 9, plotarea: 180.72, plotfacing: 'West', status: 'Available' },
+            { plotno: 42, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 25, widthinches1: 0, widthfeet2: 25, widthinches2: 0, plotarea: 152.82, plotfacing: 'West', status: 'Available' },
+            { plotno: 43, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Available' },
+            { plotno: 44, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Available' },
+            { plotno: 45, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Available' },
+            { plotno: 46, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.7, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 47, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 244.66, plotfacing: 'North-West', status: 'Landlord' },
+            { plotno: 48, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 244.66, plotfacing: 'South-West', status: 'Landlord' },
+            { plotno: 49, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 50, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 51, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 52, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 53, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 54, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 55, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 244.66, plotfacing: 'North-West', status: 'Landlord' },
+            { plotno: 56, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 266.66, plotfacing: 'North-East', status: 'Landlord' },
+            { plotno: 57, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 58, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 59, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 60, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 61, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 62, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Available' },
+            { plotno: 63, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 266.66, plotfacing: 'South-East', status: 'Available' },
+            { plotno: 64, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 266.66, plotfacing: 'North-East', status: 'Sold' },
+            { plotno: 65, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Available' },
+            { plotno: 66, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Available' },
+            { plotno: 67, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Available' },
+            { plotno: 68, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 220, plotfacing: 'East', status: 'Available' },
+            { plotno: 69, lengthfeet1: 60, lengthinches1: 0, lengthfeet2: 60, lengthinches2: 2, widthfeet1: 50, widthinches1: 0, widthfeet2: 44, widthinches2: 9, plotarea: 316.88, plotfacing: 'East', status: 'Available' },
+            { plotno: 70, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 3, widthfeet1: 39, widthinches1: 6, widthfeet2: 44, widthinches2: 9, plotarea: 257.46, plotfacing: 'West', status: 'Available' },
+            { plotno: 71, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Available' },
+            { plotno: 72, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Available' },
+            { plotno: 73, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Available' },
+            { plotno: 74, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Available' },
+            { plotno: 75, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 244.66, plotfacing: 'North-West', status: 'Available' },
+            { plotno: 76, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 244.66, plotfacing: 'South-West', status: 'Available' },
+            { plotno: 77, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 78, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 79, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 80, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 81, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 82, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 201.66, plotfacing: 'West', status: 'Landlord' },
+            { plotno: 83, lengthfeet1: 55, lengthinches1: 0, lengthfeet2: 55, lengthinches2: 0, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 244.66, plotfacing: 'North-West', status: 'Landlord' },
+            { plotno: 84, lengthfeet1: 59, lengthinches1: 0, lengthfeet2: 58, lengthinches2: 9, widthfeet1: 40, widthinches1: 0, widthfeet2: 40, widthinches2: 0, plotarea: 261.88, plotfacing: 'North-East', status: 'Landlord' },
+            { plotno: 85, lengthfeet1: 58, lengthinches1: 9, lengthfeet2: 58, lengthinches2: 6, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 214.9, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 86, lengthfeet1: 58, lengthinches1: 6, lengthfeet2: 58, lengthinches2: 3, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 214.03, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 87, lengthfeet1: 58, lengthinches1: 3, lengthfeet2: 58, lengthinches2: 1, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 213.33, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 88, lengthfeet1: 58, lengthinches1: 1, lengthfeet2: 57, lengthinches2: 11, widthfeet1: 33, widthinches1: 0, widthfeet2: 33, widthinches2: 0, plotarea: 212.64, plotfacing: 'East', status: 'Landlord' },
+            { plotno: 89, lengthfeet1: 57, lengthinches1: 11, lengthfeet2: 57, lengthinches2: 11, widthfeet1: 36, widthinches1: 10, widthfeet2: 31, widthinches2: 7, plotarea: 219.72, plotfacing: 'East', status: 'Landlord' },
+        ];
+
+        function addPlotButtons() {
+            const plotsContainer = document.getElementById('plots-container');
+
+            plotPositions.forEach((position, index) => {
+                const button = document.createElement('button');
+                button.className = 'plot-button';
+
+                // Set the plot number as the button's text
+                button.textContent = position.number;
+
+                // Set the button position on the map
+                button.style.top = position.top;
+                button.style.left = position.left;
+
+                // Set the button color based on plot status
+                const plot = plotData.find(plot => plot.plotno === position.number);
+                if (plot) {
+                    if (plot.status === 'Available') {
+                        button.classList.add('available');
+                    } else if (plot.status === 'Landlord') {
+                        button.classList.add('landlord');
+                    } else if (plot.status === 'Sold') {
+                        button.classList.add('sold');
+                    }
+                }
+
+                // Append the button to the container
+                plotsContainer.appendChild(button);
+
+                // Add an event listener to show plot details in a modal
+                button.addEventListener('click', () => {
+                    showPlotDetails(plot);
+                });
+            });
+        }
+
+        // Function to show plot details in the modal
+        function showPlotDetails(plot) {
+            const modal = document.getElementById('plotModal');
+            const plotDetails = document.getElementById('plotDetails');
+
+            // Populate modal with plot details
+            plotDetails.innerHTML = `
+                <p>Plot Number: ${plot.plotno}</p>
+                <p>Length 1: ${plot.lengthfeet1}' ${plot.lengthinches1}"</p>
+                <p>Length 2: ${plot.lengthfeet2}' ${plot.lengthinches2}"</p>
+                <p>Width 1: ${plot.widthfeet1}' ${plot.widthinches1}"</p>
+                <p>Width 2: ${plot.widthfeet2}' ${plot.widthinches2}"</p>
+                <p>Plot Area: ${plot.plotarea} sq. ft.</p>
+                <p>Plot Facing: ${plot.plotfacing}</p>
+                <p>Status: ${plot.status}</p>
+            `;
+
+            // Display the modal
+            modal.style.display = 'flex';
+        }
+
+        // Initialize plot buttons when the page loads
+        window.onload = addPlotButtons;
+
+        // Close the modal when the close button is clicked
+        document.querySelector('.close').addEventListener('click', () => {
+            document.getElementById('plotModal').style.display = 'none';
+        });
+
+    </script>
+</body>
+</html>

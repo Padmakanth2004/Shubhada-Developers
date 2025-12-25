@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maruthi Meadows - Shubhada Developers</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="logo.png" type="image/x-icon">
+    <style>
+        /* Your existing CSS */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .text-box h1 {
+            font-size: 60px; /* Adjust this value as needed */
+            font-weight: 700; /* Adjust the weight as needed */
+            color: #333;
+            font-family: 'Roboto', sans-serif; /* Change the font family here */
+        }
+        .logo-container {
+    position: absolute;
+    top: 25px; /* Adjusted for top positioning */
+    left: 25px; /* Adjusted for left positioning */
+    width: 150px; /* Adjusted logo size */
+}
+
+.logo-container .logo {
+    width: 120%;
+    height: 120%; /* Maintain aspect ratio */
+}
+
+.logo {
+    display: block;
+    width: 150px; /* Adjust the size as needed */
+    height: 160px; /* Maintain aspect ratio */
+}
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            background-color: white;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .navbar img {
+            height: 50px;
+            margin-left: 20px;
+        }
+
+        .navbar div {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: black;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-right: 20px;
+        }
+
+        .navbar a:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .hero-section {
+            position: relative;
+            text-align: center;
+        }
+
+        .hero-section img {
+            width: 100%;
+            height: 800px; /* Increased height */
+            object-fit: cover;
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: black; /* Changed color to black */
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-text h1 {
+            font-size: 48px;
+            margin: 0;
+        }
+
+        .hero-text p {
+            font-size: 24px;
+            margin: 10px 0 0;
+        }
+
+        .content-section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .amenities-section {
+            padding: 40px 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        .amenities-section h2 {
+            color: red;
+            margin-bottom: 20px;
+        }
+
+        .amenities-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .amenities-list div {
+            width: 30%;
+            text-align: left;
+        }
+
+        .location-section {
+            padding: 40px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f2f2f2;
+            flex-wrap: wrap; /* Added to wrap content on smaller screens */
+        }
+
+        .location-section img {
+            width: 45%;
+            height: auto;
+        }
+
+        .location-highlights {
+            width: 45%;
+            text-align: left;
+        }
+
+        .location-highlights h2 {
+            color: red;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background-color: white;
+            color: black;
+        }
+
+        /* Scrolling text styles */
+        .scrolling-text-section {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .scrolling-text {
+            white-space: nowrap;
+            display: inline-block;
+            animation: scroll-left 19s linear infinite;
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Download button styles */
+        .download-section {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .download-button {
+            background-color: #ff0000; /* Red background color */
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .download-button:hover {
+            background-color: #cc0000; /* Darker red on hover */
+        }
+
+        /* Mobile Menu Button and Pop-up Styles */
+        .menu-bar {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background-color: white;
+            border: 2px solid black;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .menu-bar i {
+            font-size: 24px;
+        }
+
+        .menu-popup {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background-color: white;
+            box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .menu-popup.active {
+            transform: translateX(0);
+        }
+
+        .menu-popup .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .menu-popup .menu-items {
+            margin-top: 60px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .menu-popup .menu-items a {
+            display: block;
+            color: black;
+            text-decoration: none;
+            padding: 15px 0;
+            font-size: 18px;
+        }
+
+        .menu-popup .menu-items a:hover {
+            background-color: #ddd;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .amenities-list div {
+                width: 45%;
+                margin-bottom: 20px;
+            }
+
+            .location-section img,
+            .location-highlights {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar a {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+
+            .hero-text h1 {
+                font-size: 36px;
+            }
+
+            .hero-text p {
+                font-size: 20px;
+            }
+
+            .amenities-list div {
+                width: 100%;
+            }
+
+            .location-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .location-section img {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+
+            .location-highlights {
+                width: 80%;
+                text-align: center;
+            }
+
+            .menu-bar {
+                display: block;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 28px;
+            }
+
+            .hero-text p {
+                font-size: 18px;
+            }
+
+            .navbar a {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+
+            .download-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <img src="logo.png" alt="Shubhada Developers Logo">
+            <div>
+                <a href="/">HOME</a>
+                <div class="dropdown">
+                    <a href="javascript:void(0)">PROJECTS</a>
+                    <div class="dropdown-content">
+                        <a href="sheshadri-nivas.html">Sheshadri Nivas</a>
+                        <a href="maruthi.html">Maruthi Meadows</a>
+                    </div>
+                </div>
+                <a href="contact.html">CONTACT US</a>
+            </div>
+        </div>
+       
+        </div>
+    </header>
+    <section class="hero-section">
+        <img src="BG.jpg" alt="Maruthi Homes">
+        <div class="hero-text">
+            <h1>Maruthi Meadows</h1>
+            <p>Your Dream Home Awaits</p>
+        </div>
+    </section>
+    <section class="content-section">
+        <h2>Welcome to Maruthi Meadows</h2>
+        <p>We offer the best residential projects with world-class amenities. Explore our projects and find your dream home with Maruthi Homes.</p>
+    </section>
+    <section class="amenities-section">
+        <h2>AMENITIES & FEATURES</h2>
+        <div class="amenities-list">
+            <div>
+                <ul>
+                    <li>All 40’ BT Roads</li>
+                    <li>100% Vastu</li>
+                    <li>Avenue Plantation with Drip System</li>
+                    <li>1 Lakh Liter Capacity of Over Head Water Tank & Sump</li>
+                    <li>3 Phase Electricity with 1 Transformer</li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>Parks, Lawns & Flower Plantation</li>
+                    <li>Under Ground Drainage & Water Pipelines</li>
+                    <li>Separate Mission Bhagiratha Pipe Line</li>
+                    <li>Elevated Main Gate with Arch</li>
+                    <li>Water Harvesting Pits & Separate Garbage Area</li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>Compound Wall for Total Layout</li>
+                    <li>Foot Paths with Curb Stones</li>
+                    <li>Spacious Park Area</li>
+                    <li>Upcoming Planned Villa Houses & Apartments</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section class="location-section">
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3795.247168800703!2d79.4458387750607!3d17.967233983022307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a334d7f0a1ab507%3A0xf1b7bd34a90d6282!2sMaruthi%20Developers!5e0!3m2!1sen!2sin!4v1722940991675!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div class="location-highlights">
+            <h2>LOCATION HIGHLIGHTS</h2>
+            <ul>
+                <li>Under Greater Warnagal Municipal Corporation (GWMC) Limits</li>
+                <li>Just beside to Outer Ring Road, (NH-163)</li>
+                <li>4Km from Delhi Public School (DPS)</li>
+                <li>Very near to proposed Hyderabad Public School (HPS)</li>
+                <li>Near to Central Sainik School</li>
+                <li>Near to Mini Textile Park, Rampur</li>
+                <li>Near to Proposed Novatel Hotel</li>
+                <li>Near to Madikonda IT Hub</li>
+                <li>Just 5km from Kazipet Railway Station</li>
+                <li>6km from NIT Warangal</li>
+                <li>Suitable site for immediate house construction</li>
+            </ul>
+        </div>
+    </section>
+    <section class="download-section">
+        <a href="madikonda map 2.pdf" class="download-button" download>Download Brochure</a>
+    </section>
+    <section class="scrolling-text-section">
+        <div class="scrolling-text">
+            <p>Book your dream home now! | Limited plots available! | Contact us for more details.</p>
+        </div>
+    </section>
+    <script>
+           // Sidebar toggle functionality
+           const menuIcon = document.getElementById('menuIcon');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('closeBtn');
+
+        menuIcon.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            menuIcon.style.display = 'none';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            menuIcon.style.display = 'block';
+        });
+
+        // Toggle dropdown in the sidebar
+        const projectsLink = document.getElementById('projectsLink');
+        projectsLink.addEventListener('click', () => {
+            const parentLi = projectsLink.closest('li');
+            parentLi.classList.toggle('active');
+        });
+    </script>
+    <footer class="footer">
+        <p>&copy; 2024 Shubhada Developers. All rights reserved.</p>
+    </footer>
+    <div class="footer-right">
+        <p>Designed & Developed by Balaji Solutions</p>
+    </div>
+</body>
+</html>
